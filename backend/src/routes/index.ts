@@ -2,6 +2,7 @@ import express from 'express';
 import userRouter from './userRoutes';
 import sessionRouter from './sessionRoutes';
 import auth from '../middlewares/auth';
+import establishmentRouter from './establishmentRoutes';
 
 const router = express.Router();
 
@@ -14,6 +15,6 @@ router.use('/users', userRouter);
 
 router.use('/sessions', sessionRouter);
 
-router.use(auth);
+router.use('/establishment', establishmentRouter);
 
 export default router;
