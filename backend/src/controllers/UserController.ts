@@ -6,11 +6,11 @@ interface Request {
   name: string;
   email: string;
   password: string;
-  thumbnail: string;
+  avatar: string;
 }
 
 class UserController {
-  public async store({ name, email, password, thumbnail }: Request) {
+  public async store({ name, email, password, avatar }: Request) {
     let user = await User.findOne({ email });
 
     if (user) {
@@ -22,7 +22,7 @@ class UserController {
       email,
       name,
       hashPassword,
-      thumbnail,
+      avatar,
     });
 
     user = user.toJSON();
