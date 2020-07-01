@@ -5,14 +5,14 @@ export interface IUserSchema extends Document {
   name: string;
   email: string;
   hashPassword: string;
-  thumbnail: string;
-  thumbnail_url?: string;
+  avatar: string;
+  avatar_url?: string;
 }
 
 export const UserSchema: Schema = new Schema(
   {
     name: String,
-    thumbnail: String,
+    avatar: String,
     email: String,
     hashPassword: String,
   },
@@ -23,8 +23,8 @@ export const UserSchema: Schema = new Schema(
   },
 );
 
-UserSchema.virtual('thumbnail_url').get(function (this: { thumbnail: String }) {
-  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.thumbnail}`;
+UserSchema.virtual('avatar_url').get(function (this: { avatar: String }) {
+  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.avatar}`;
 });
 
 export const User = model<IUserSchema>('User', UserSchema);

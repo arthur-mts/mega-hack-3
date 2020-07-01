@@ -1,30 +1,32 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 import PointSchema, { IPointSchema } from './util/point';
-import mongoosePaginate from 'mongoose-paginate';
 
 export interface IEstablishmentSchema extends Document {
   name: string;
   description: string;
+  maxReservations: number;
+  email: string;
   location: IPointSchema;
-  category: string;
-  thumbnail: string;
-  owner: Types.ObjectId;
-  thumbnail_url: string;
+  hashPassword: string;
+  avatar: string;
+  avatar_url?: string;
+  reservations_count?: number;
   phoneNumber: string;
 }
 
-export const EstablishmentSchema: Schema = new Schema(
+const EstablishmentSchema: Schema = new Schema(
   {
     name: String,
     description: String,
+    maxReservations: Number,
+    reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }],
     email: String,
     hashPassword: String,
     location: {
       type: PointSchema,
       index: '2dsphere',
     },
-
-    thumbnail: {
+    avatar: {
       required: false,
       type: String,
     },
@@ -40,10 +42,12 @@ export const EstablishmentSchema: Schema = new Schema(
   },
 );
 
-EstablishmentSchema.virtual('thumbnail_url').get(function (this: { thumbnail: String }) {
-  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.thumbnail}`;
+EstablishmentSchema.virtual('avatar_url').get(function (this: { avatar: String }) {
+  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.avatar}`;
 });
 
-EstablishmentSchema.plugin(mongoosePaginate);
+EstablishmentSchema.virtual('reservations_count').get(function (this: { reservations: Array<any> }) {
+  return this.reservations.length;
+});
 
-export const Mark = model<IEstablishmentSchema>('Mark', EstablishmentSchema);
+export const Establishment = model<IEstablishmentSchema>('Establishment', EstablishmentSchema);
