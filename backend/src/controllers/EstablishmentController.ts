@@ -5,7 +5,6 @@ import AppError from '../errors/AppError';
 interface Request {
   name: string;
   description: string;
-  maxReservations: number;
   email: string;
   latitude: any;
   longitude: any;
@@ -15,17 +14,7 @@ interface Request {
 }
 
 class EstablishmentController {
-  public async store({
-    name,
-    email,
-    password,
-    avatar,
-    description,
-    maxReservations,
-    latitude,
-    longitude,
-    phoneNumber,
-  }: Request) {
+  public async store({ name, email, password, avatar, description, latitude, longitude, phoneNumber }: Request) {
     let establishment = await Establishment.findOne({ email });
 
     if (establishment) {
@@ -46,7 +35,6 @@ class EstablishmentController {
       avatar,
       description,
       phoneNumber,
-      maxReservations,
       location,
     });
 
