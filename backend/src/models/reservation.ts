@@ -4,14 +4,21 @@ export interface IReservationSchema extends Document {
   userId: Types.ObjectId;
   establishmentId: Types.ObjectId;
   schedule: Date;
-  isOpen: boolean;
+  aprooved: boolean | null;
+  closed: boolean | null;
+  feedback: null | Types.ObjectId;
 }
 
 const ReservationSchema: Schema = new Schema({
-  userId: Types.ObjectId,
-  establishmentId: Types.ObjectId,
+  userId: { type: Types.ObjectId, ref: 'User' },
+  establishmentId: { type: Types.ObjectId, ref: 'Establishment' },
   schedule: Date,
-  isOpen: Boolean,
+  aprooved: Boolean,
+  closed: Boolean,
+  feedback: {
+    type: Types.ObjectId,
+    ref: 'Feedback',
+  },
 });
 
 export const Reservation = model<IReservationSchema>('Reservation', ReservationSchema);

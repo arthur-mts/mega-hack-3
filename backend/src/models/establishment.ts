@@ -4,7 +4,6 @@ import PointSchema, { IPointSchema } from './util/point';
 export interface IEstablishmentSchema extends Document {
   name: string;
   description: string;
-  maxReservations: number;
   email: string;
   location: IPointSchema;
   hashPassword: string;
@@ -12,13 +11,13 @@ export interface IEstablishmentSchema extends Document {
   avatar_url?: string;
   reservations_count?: number;
   phoneNumber: string;
+  reservations?: [Schema.Types.ObjectId];
 }
 
 const EstablishmentSchema: Schema = new Schema(
   {
     name: String,
     description: String,
-    maxReservations: Number,
     reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }],
     email: String,
     hashPassword: String,
