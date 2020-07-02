@@ -1,10 +1,11 @@
-import { Document, Schema, model } from 'mongoose';
+import { Document, Schema, model, Types } from 'mongoose';
 import { compare } from 'bcrypt';
 
 export interface IUserSchema extends Document {
   name: string;
   email: string;
   hashPassword: string;
+  reservations?: [Types.ObjectId];
   avatar: string;
   avatar_url?: string;
 }
@@ -15,6 +16,12 @@ export const UserSchema: Schema = new Schema(
     avatar: String,
     email: String,
     hashPassword: String,
+    reservations: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Reservation',
+      },
+    ],
   },
   {
     toJSON: {

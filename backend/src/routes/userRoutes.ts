@@ -23,6 +23,22 @@ userRouter.post('/', upload.single('avatar'), async (req, res) => {
 
 userRouter.use(auth);
 
+userRouter.put('/', upload.single('avatar'), async (req, res) => {
+  const { name } = req.body;
+
+  const { user_id } = req;
+
+  let filename = null;
+
+  if (req.file) filename = req.file.filename;
+
+  const user = await UserController.update({ user_id, name, avatar: filename });
+
+  return res.json(user);
+});
+
 userRouter.use('/reservations', reservationRouter);
+
+// userRouter.use('/establishments');
 
 export default userRouter;
