@@ -7,7 +7,7 @@ const establishmentRouter = Router();
 
 establishmentRouter.post('/', upload.single('avatar'), async (req, res) => {
   try {
-    const { name, email, password, description, phoneNumber, latitude, longitude, maxReservations } = req.body;
+    const { name, email, password, description, phoneNumber, latitude, longitude } = req.body;
 
     const { filename } = req.file;
 
@@ -20,7 +20,6 @@ establishmentRouter.post('/', upload.single('avatar'), async (req, res) => {
       longitude,
       phoneNumber,
       description,
-      maxReservations,
     });
 
     return res.json(establishment);
