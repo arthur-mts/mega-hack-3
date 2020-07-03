@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface IPointSchema {
-  coordinates: [Number];
+  coordinates: Array<Number>;
 }
 
 const PointSchema: mongoose.Schema = new mongoose.Schema({
