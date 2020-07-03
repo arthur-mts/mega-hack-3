@@ -3,7 +3,7 @@ import UserController from '../controllers/UserController';
 import upload from '../config/upload';
 import errorHandler from '../errors/ErrorHandlerFunction';
 import auth from '../middlewares/auth';
-import reservationRouter from './reservationRoutes';
+import userReservationRouter from './userReservationRoutes';
 
 const userRouter = Router();
 
@@ -37,7 +37,7 @@ userRouter.put('/', upload.single('avatar'), async (req, res) => {
   return res.json(user);
 });
 
-userRouter.use('/reservations', reservationRouter);
+userRouter.use('/reservations', userReservationRouter);
 
 // userRouter.use('/establishments');
 

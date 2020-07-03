@@ -14,6 +14,6 @@ router.use('/users', userRouter);
 
 router.use('/sessions', sessionRouter);
 
-router.use('/establishment', establishmentRouter);
+router.use('/establishments', establishmentRouter);
 
 export default router;
