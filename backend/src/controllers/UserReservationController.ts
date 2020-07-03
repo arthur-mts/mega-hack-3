@@ -1,7 +1,7 @@
 import { Establishment } from '../models/establishment';
 import AppError from '../errors/AppError';
 import { Types } from 'mongoose';
-import { Reservation, IReservationSchema } from '../models/reservation';
+import { Reservation } from '../models/reservation';
 import { User } from '../models/user';
 
 interface StoreRequest {
@@ -10,7 +10,7 @@ interface StoreRequest {
   user_id: Types.ObjectId;
 }
 
-class ReservationController {
+class UserReservationController {
   public async store({ establishment_id, date, user_id }: StoreRequest) {
     const establishment = await Establishment.findById(establishment_id);
 
@@ -22,9 +22,6 @@ class ReservationController {
       establishmentId: establishment_id,
       schedule: new Date(date),
       userId: user_id,
-      aprooved: null,
-      feedback: null,
-      closed: null,
     });
 
     //send notification to establishment
@@ -42,11 +39,20 @@ class ReservationController {
     console.log(user?.reservations);
 
     let reservations = user?.reservations?.map(async (item) => {
-      return await Reservation.findById(item).populate('establishmentId');
+      const reservation = await Reservation.findById(item);
+
+      let establishment = await Establishment.findById(reservation?.establishmentId);
+
+      establishment = establishment?.toJSON();
+
+      delete establishment?.hashPassword;
+
+      return { reservation, establishment };
     });
 
     if (reservations) return await Promise.all(reservations);
+    else return [];
   }
 }
 
-export default new ReservationController();
+export default new UserReservationController();

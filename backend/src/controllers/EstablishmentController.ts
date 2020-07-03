@@ -1,8 +1,16 @@
 import { Establishment } from '../models/establishment';
 import { hash } from 'bcrypt';
 import AppError from '../errors/AppError';
+import { removeFile } from '../config/upload';
+import { Types } from 'mongoose';
 
-interface Request {
+interface ListRequest {
+  latitude: string;
+  longitude: string;
+  radius: number;
+}
+
+interface StoreRequest {
   name: string;
   description: string;
   email: string;
@@ -13,8 +21,19 @@ interface Request {
   phoneNumber: string;
 }
 
+interface UpdateRequest {
+  establishment_id: Types.ObjectId;
+  name?: string;
+  description?: string;
+  email?: string;
+  latitude?: Number;
+  longitude?: Number;
+  avatar?: string;
+  phoneNumber?: string;
+}
+
 class EstablishmentController {
-  public async store({ name, email, password, avatar, description, latitude, longitude, phoneNumber }: Request) {
+  public async store({ name, email, password, avatar, description, latitude, longitude, phoneNumber }: StoreRequest) {
     let establishment = await Establishment.findOne({ email });
 
     if (establishment) {
@@ -39,6 +58,65 @@ class EstablishmentController {
     });
 
     establishment = establishment.toJSON();
+
+    delete establishment?.hashPassword;
+
+    return establishment;
+  }
+
+  public async list({ latitude, longitude, radius }: ListRequest) {
+    console.log(radius);
+    const establishments = await Establishment.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          $maxDistance: radius,
+        },
+      },
+    }).select('-hashPassword');
+
+    return establishments;
+  }
+
+  public async update({
+    avatar,
+    description,
+    latitude,
+    longitude,
+    name,
+    phoneNumber,
+    establishment_id,
+  }: UpdateRequest) {
+    let establishment = await Establishment?.findById(establishment_id);
+
+    if (establishment) {
+      if (avatar) {
+        removeFile(establishment.avatar);
+        establishment.avatar = avatar;
+      }
+
+      establishment.description = description || establishment.description;
+
+      console.log(description);
+      establishment.name = name || establishment.name;
+
+      establishment.phoneNumber = phoneNumber || establishment.phoneNumber;
+
+      if (latitude && longitude) {
+        const location = {
+          type: 'Point',
+          coordinates: [longitude, latitude],
+        };
+        establishment.location = location;
+      }
+
+      await establishment.save();
+    }
+
+    establishment = establishment?.toJSON();
 
     delete establishment?.hashPassword;
 
