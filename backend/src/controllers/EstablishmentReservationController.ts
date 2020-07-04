@@ -1,6 +1,7 @@
-import { Establishment } from '../models/establishment';
 import { Types } from 'mongoose';
-import { Reservation } from '../models/reservation';
+import { hash } from 'bcrypt';
+import { Reservation, ReservationStatus } from '../models/reservation';
+import AppError from '../errors/AppError';
 
 interface ListRequest {
   establishment_id: Types.ObjectId;
@@ -8,20 +9,23 @@ interface ListRequest {
 }
 
 class EstablishmentReservationController {
+  public async validate({ reservation_id }: { reservation_id: string }) {
+    const reservation = await Reservation.findById(reservation_id);
+
+    if (!reservation) throw new AppError('Reservation not found', 404);
+
+    reservation.status = ReservationStatus.APPROVED;
+
+    await reservation.save();
+
+    const validationCode = await hash(reservation_id, 2);
+
+    return { reservation, validationCode };
+  }
+
   public async list({ establishment_id, filter }: ListRequest) {
-    const establishment = await Establishment.findById(establishment_id);
-
-    let reservations = establishment?.reservations?.map(async (item) => {
-      const reservation = await Reservation.findById(item);
-
-      let establishment = await Establishment.findById(reservation?.establishmentId);
-
-      establishment = establishment?.toJSON();
-
-      delete establishment?.hashPassword;
-
-      return { reservation, establishment };
-    });
+    const reservations = await Reservation.find({ establishmentId: establishment_id });
+    //TODO filtrar reservas do estabelecimento pelo enum de status
 
     if (filter) {
       switch (filter) {
@@ -34,8 +38,7 @@ class EstablishmentReservationController {
       }
     }
 
-    if (reservations) return await Promise.all(reservations);
-    else return [];
+    return reservations;
   }
 }
 
