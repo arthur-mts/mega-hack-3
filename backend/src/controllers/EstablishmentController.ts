@@ -55,6 +55,12 @@ class EstablishmentController {
       description,
       phoneNumber,
       location,
+      score: {
+        attendance: 0,
+        hygiene: 0,
+        drinksQuality: 0,
+        price: 0,
+      },
     });
 
     establishment = establishment.toJSON();
