@@ -18,4 +18,19 @@ establishmentReservationRouter.get('/:filter?', async (req, res) => {
   }
 });
 
+//TODO Validar se as reservas pertencem a esse estabelecimento
+
+establishmentReservationRouter.post('/approve/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log(id);
+    const { reservation, validationCode } = await EstablishmentReservationController.validate({ reservation_id: id });
+
+    return res.json({ reservation, validationCode });
+  } catch (err) {
+    errorHandler(err, res);
+  }
+});
+
 export default establishmentReservationRouter;

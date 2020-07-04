@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import errorHandler from '../errors/ErrorHandlerFunction';
 import UserReservationController from '../controllers/UserReservationController';
+import CheckReservationController from '../controllers/CheckReservationController';
 
 const userReservationRouter = Router();
 
@@ -25,6 +26,16 @@ userReservationRouter.get('/', async (req, res) => {
     const reservations = await UserReservationController.list({ user_id });
 
     return res.json(reservations);
+  } catch (err) {
+    errorHandler(err, res);
+  }
+});
+
+userReservationRouter.post('/checkin', async (req, res) => {
+  try {
+    const { validator, reservation_id } = req.body;
+    await CheckReservationController.in({ checkInValidator: validator, reservation_id });
+    return res.status(200).send();
   } catch (err) {
     errorHandler(err, res);
   }
