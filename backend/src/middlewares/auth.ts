@@ -8,11 +8,12 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   if (!authHeader) return res.status(401).send({ message: 'token not provided' });
 
   const [, token] = authHeader.split(' ');
+
   try {
     const decoded: any = jwt.verify(token, String(process.env.JWT_SECRET)).valueOf();
 
-    req.user_id = Types.ObjectId(decoded._id);
-
+    if (req.baseUrl === '/users') req.user_id = Types.ObjectId(decoded._id);
+    else req.establishment_id = Types.ObjectId(decoded._id);
     return next();
   } catch (err) {
     return res.status(401).send({ message: 'invalid token' });

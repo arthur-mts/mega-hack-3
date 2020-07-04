@@ -1,37 +1,53 @@
 import { Schema, model, Document, Types } from 'mongoose';
 import PointSchema, { IPointSchema } from './util/point';
-import mongoosePaginate from 'mongoose-paginate';
+import { IReservationSchema, Reservation, ReservationStatus } from './reservation';
+
+export interface IScoreSchema {
+  attendance: Number;
+  hygiene: Number;
+  price: Number;
+  drinksQuality: Number;
+}
+
+const ScoreSchema: Schema = new Schema({
+  attendance: { type: Number },
+  hygiene: { type: Number },
+  price: { type: Number },
+  drinksQuality: { type: Number },
+});
 
 export interface IEstablishmentSchema extends Document {
   name: string;
   description: string;
+  feedbacks_count?: Promise<Types.ObjectId[]>;
+  email: string;
   location: IPointSchema;
-  category: string;
-  thumbnail: string;
-  owner: Types.ObjectId;
-  thumbnail_url: string;
+  hashPassword: string;
+  avatar: string;
+  avatar_url?: string;
+  reservations_count?: number;
   phoneNumber: string;
+  reservations?: [Schema.Types.ObjectId];
+  score?: IScoreSchema;
 }
 
-export const EstablishmentSchema: Schema = new Schema(
+const EstablishmentSchema: Schema = new Schema(
   {
     name: String,
     description: String,
+    score: { type: ScoreSchema },
+    reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }],
     email: String,
     hashPassword: String,
     location: {
       type: PointSchema,
       index: '2dsphere',
     },
-
-    thumbnail: {
+    avatar: {
       required: false,
       type: String,
     },
-    phoneNumber: {
-      required: false,
-      type: String,
-    },
+    phoneNumber: String,
   },
   {
     toJSON: {
@@ -40,10 +56,19 @@ export const EstablishmentSchema: Schema = new Schema(
   },
 );
 
-EstablishmentSchema.virtual('thumbnail_url').get(function (this: { thumbnail: String }) {
-  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.thumbnail}`;
+EstablishmentSchema.virtual('avatar_url').get(function (this: { avatar: String }) {
+  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.avatar}`;
 });
 
-EstablishmentSchema.plugin(mongoosePaginate);
+EstablishmentSchema.virtual('reservations_count').get(function (this: { reservations: Array<IReservationSchema> }) {
+  return this.reservations.length;
+});
 
-export const Mark = model<IEstablishmentSchema>('Mark', EstablishmentSchema);
+// return Promise.all<Types.ObjectId>(
+//   this.reservations.filter(async (item) => {
+//     const reservation = await Reservation.findById(item);
+//     return reservation?.status == ReservationStatus.CLOSED && reservation.feedback;
+//   }),
+// );
+
+export const Establishment = model<IEstablishmentSchema>('Establishment', EstablishmentSchema);

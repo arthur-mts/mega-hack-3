@@ -1,16 +1,24 @@
 import { User } from '../models/user';
 import { hash } from 'bcrypt';
 import AppError from '../errors/AppError';
+import { Types } from 'mongoose';
+import { removeFile } from '../config/upload';
 
-interface Request {
+interface StoreRequst {
   name: string;
   email: string;
   password: string;
-  thumbnail: string;
+  avatar: string;
+}
+
+interface UpdateRequest {
+  user_id: Types.ObjectId;
+  name?: string | null;
+  avatar?: string | null;
 }
 
 class UserController {
-  public async store({ name, email, password, thumbnail }: Request) {
+  public async store({ name, email, password, avatar }: StoreRequst) {
     let user = await User.findOne({ email });
 
     if (user) {
@@ -22,10 +30,29 @@ class UserController {
       email,
       name,
       hashPassword,
-      thumbnail,
+      avatar,
     });
 
     user = user.toJSON();
+
+    delete user?.hashPassword;
+
+    return user;
+  }
+
+  public async update({ user_id, name, avatar }: UpdateRequest) {
+    let user = await User.findById(user_id);
+
+    if (user?.avatar && avatar) {
+      removeFile(user.avatar);
+      user.avatar = avatar;
+    }
+
+    if (user?.name && name) user.name = name;
+
+    user?.save();
+
+    user = user?.toJSON();
 
     delete user?.hashPassword;
 

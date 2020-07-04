@@ -12,8 +12,8 @@ const storage = multer.diskStorage({
   },
 });
 
-export function removeFile(filename: PathLike) {
-  unlink(filename, (err) => {
+export function removeFile(filename: string) {
+  unlink(path.resolve(__dirname, '..', '..', 'uploads', filename), (err) => {
     if (err) {
       console.log(err);
     } else {

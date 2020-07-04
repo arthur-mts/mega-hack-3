@@ -2471,7 +2471,7 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-onesignal-node@^3.0.0:
+onesignal-node@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/onesignal-node/-/onesignal-node-3.0.2.tgz#5885c1ac79bacdf654f470e6efccd7275af6bf75"
   integrity sha512-pR6B2uM5/1Gr3vN5oRna+gk5K2wIk9dgMkU0JbK3SUfCPE3FPX6YxjrL2n5yVP6O2GKfHOpZcW22pgxO7+WsQw==

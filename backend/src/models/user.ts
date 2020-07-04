@@ -1,20 +1,27 @@
-import { Document, Schema, model } from 'mongoose';
+import { Document, Schema, model, Types } from 'mongoose';
 import { compare } from 'bcrypt';
 
 export interface IUserSchema extends Document {
   name: string;
   email: string;
   hashPassword: string;
-  thumbnail: string;
-  thumbnail_url?: string;
+  reservations?: [Types.ObjectId];
+  avatar: string;
+  avatar_url?: string;
 }
 
 export const UserSchema: Schema = new Schema(
   {
     name: String,
-    thumbnail: String,
+    avatar: String,
     email: String,
     hashPassword: String,
+    reservations: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Reservation',
+      },
+    ],
   },
   {
     toJSON: {
@@ -23,8 +30,8 @@ export const UserSchema: Schema = new Schema(
   },
 );
 
-UserSchema.virtual('thumbnail_url').get(function (this: { thumbnail: String }) {
-  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.thumbnail}`;
+UserSchema.virtual('avatar_url').get(function (this: { avatar: String }) {
+  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.avatar}`;
 });
 
 export const User = model<IUserSchema>('User', UserSchema);
