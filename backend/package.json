@@ -21,7 +21,8 @@
   },
   "scripts": {
     "build": "tsc --outDir build",
-    "start": "nodemon --watch 'src/' --exec 'ts-node' src/app.ts"
+    "dev": "nodemon --watch 'src/' --exec 'ts-node' src/app.ts",
+    "start": "node build/app.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
