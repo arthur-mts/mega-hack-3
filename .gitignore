@@ -3,5 +3,4 @@ db/
 uploads/
 !uploads/.gitkeep
 .env
-yarn.lock
 .vscode
