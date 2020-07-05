@@ -36,8 +36,6 @@ class UserReservationController {
   public async list({ user_id }: { user_id: Types.ObjectId }) {
     const user = await User.findById(user_id);
 
-    console.log(user?.reservations);
-
     let reservations = user?.reservations?.map(async (item) => {
       const reservation = await Reservation.findById(item);
 

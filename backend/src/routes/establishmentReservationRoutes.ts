@@ -22,12 +22,40 @@ establishmentReservationRouter.get('/:filter?', async (req, res) => {
 
 establishmentReservationRouter.post('/approve/:id', async (req, res) => {
   try {
+    const { establishment_id } = req;
+
     const { id } = req.params;
 
-    console.log(id);
-    const { reservation, validationCode } = await EstablishmentReservationController.validate({ reservation_id: id });
+    const { reservation, validationCode } = await EstablishmentReservationController.approve({
+      establishment_id,
+      reservation_id: id,
+    });
 
     return res.json({ reservation, validationCode });
+  } catch (err) {
+    errorHandler(err, res);
+  }
+});
+
+establishmentReservationRouter.post('/refuse/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await EstablishmentReservationController.refuse({ reservation_id: id });
+
+    return res.status(200).send();
+  } catch (err) {
+    errorHandler(err, res);
+  }
+});
+
+establishmentReservationRouter.post('/checkout/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await EstablishmentReservationController.checkout({ reservation_id: id });
+
+    return res.status(200).send();
   } catch (err) {
     errorHandler(err, res);
   }
