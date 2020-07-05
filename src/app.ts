@@ -2,7 +2,6 @@ import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import router from './routes';
 import path from 'path';
-import dotenv from 'dotenv';
 import { Server, createServer } from 'http';
 import io from 'socket.io';
 import { connectSocket, disconnectSocket } from './services/UserOnlineService';
@@ -61,7 +60,7 @@ class App {
   }
 
   private setConfig() {
-    dotenv.config();
+//    dotenv.config();
     this.app.use(express.json());
     this.app.use(cors());
   }
