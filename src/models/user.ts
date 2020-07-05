@@ -31,7 +31,7 @@ export const UserSchema: Schema = new Schema(
 );
 
 UserSchema.virtual('avatar_url').get(function (this: { avatar: String }) {
-  return `${process.env.APP_URL}:${process.env.HTTP_PORT}/files/${this.avatar}`;
+  return `${process.env.APP_URL}/files/${this.avatar}`;
 });
 
 export const User = model<IUserSchema>('User', UserSchema);

@@ -58,7 +58,7 @@ const EstablishmentSchema: Schema = new Schema(
 );
 
 EstablishmentSchema.virtual('avatar_url').get(function (this: { avatar: String }) {
-  return `${process.env.APP_URL}:${process.env.HTTP_PORT}/files/${this.avatar}`;
+  return `${process.env.APP_URL}/files/${this.avatar}`;
 });
 
 EstablishmentSchema.virtual('reservations_count').get(function (this: { reservations: Array<IReservationSchema> }) {
