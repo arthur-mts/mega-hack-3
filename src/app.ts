@@ -27,7 +27,7 @@ class App {
 
     // this.socketIoConfig();
 
-    this.app.listen(String(process.env.HTTP_PORT), () => {
+    this.app.listen(Number(process.env.HTTP_PORT), () => {
       console.log('Server on!');
     });
   }
