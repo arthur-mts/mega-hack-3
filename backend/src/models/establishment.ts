@@ -1,25 +1,26 @@
 import { Schema, model, Document, Types } from 'mongoose';
 import PointSchema, { IPointSchema } from './util/point';
-import { IReservationSchema, Reservation, ReservationStatus } from './reservation';
+import { IReservationSchema } from './reservation';
 
 export interface IScoreSchema {
-  attendance: Number;
-  hygiene: Number;
-  price: Number;
-  drinksQuality: Number;
+  attendance: number;
+  hygiene: number;
+  price: number;
+  drinksQuality: number;
+  empaty: boolean;
 }
 
 const ScoreSchema: Schema = new Schema({
-  attendance: { type: Number },
-  hygiene: { type: Number },
-  price: { type: Number },
-  drinksQuality: { type: Number },
+  attendance: { type: Number, default: 0 },
+  hygiene: { type: Number, default: 0 },
+  price: { type: Number, default: 0 },
+  drinksQuality: { type: Number, default: 0 },
+  empaty: { type: Boolean, default: true },
 });
 
 export interface IEstablishmentSchema extends Document {
   name: string;
   description: string;
-  feedbacks_count?: Promise<Types.ObjectId[]>;
   email: string;
   location: IPointSchema;
   hashPassword: string;
@@ -35,7 +36,7 @@ const EstablishmentSchema: Schema = new Schema(
   {
     name: String,
     description: String,
-    score: { type: ScoreSchema },
+    score: { type: ScoreSchema, default: {} },
     reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }],
     email: String,
     hashPassword: String,
@@ -57,18 +58,14 @@ const EstablishmentSchema: Schema = new Schema(
 );
 
 EstablishmentSchema.virtual('avatar_url').get(function (this: { avatar: String }) {
-  return `http://${process.env.IP}:${process.env.HTTP_PORT}/files/${this.avatar}`;
+  return `${process.env.APP_URL}:${process.env.HTTP_PORT}/files/${this.avatar}`;
 });
 
 EstablishmentSchema.virtual('reservations_count').get(function (this: { reservations: Array<IReservationSchema> }) {
   return this.reservations.length;
 });
 
-// return Promise.all<Types.ObjectId>(
-//   this.reservations.filter(async (item) => {
-//     const reservation = await Reservation.findById(item);
-//     return reservation?.status == ReservationStatus.CLOSED && reservation.feedback;
-//   }),
-// );
+//TODO arrumar um jeito de fazer com que o estabelecimento possa ter acesso em tempo
+// real a todas as reservas feitas
 
 export const Establishment = model<IEstablishmentSchema>('Establishment', EstablishmentSchema);
