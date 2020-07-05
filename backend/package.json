@@ -21,10 +21,12 @@
   },
   "scripts": {
     "build": "tsc --outDir build",
-    "start": "nodemon --watch 'src/' --exec 'ts-node' src/app.ts"
+    "dev": "nodemon --watch 'src/' --exec 'ts-node' src/app.ts",
+    "start": "node build/app.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
+    "@types/cors": "^2.8.6",
     "@types/dotenv": "^8.2.0",
     "@types/jsonwebtoken": "^8.3.9",
     "@types/mongoose-paginate": "^5.0.8",

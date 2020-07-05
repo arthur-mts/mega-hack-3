@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { Server, createServer } from 'http';
 import io from 'socket.io';
 import { connectSocket, disconnectSocket } from './services/UserOnlineService';
+import cors from 'cors';
 
 class App {
   public app: Application;
@@ -53,7 +54,7 @@ class App {
 
   private setMongoConfig() {
     mongoose.Promise = global.Promise;
-    mongoose.connect(`mongodb://localhost:${process.env.MONGO_PORT}/${process.env.DATABASE_NAME}`, {
+    mongoose.connect(String(process.env.MONGO_URL), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -62,6 +63,7 @@ class App {
   private setConfig() {
     dotenv.config();
     this.app.use(express.json());
+    this.app.use(cors());
   }
 }
 

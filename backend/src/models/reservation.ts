@@ -2,12 +2,12 @@ import { Schema, Types, model, Document } from 'mongoose';
 
 // SERÁ UM NUMERO DE 1 A 5 (ESTRELAS)
 
-interface IFeedback {
-  description: String;
-  attendance: Number;
-  hygiene: Number;
-  price: Number;
-  drinksQuality: Number;
+export interface IFeedback {
+  description: string;
+  attendance: number;
+  hygiene: number;
+  price: number;
+  drinksQuality: number;
 }
 
 const FeedbackSchema = new Schema({

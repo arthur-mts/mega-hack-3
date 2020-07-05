@@ -55,12 +55,6 @@ class EstablishmentController {
       description,
       phoneNumber,
       location,
-      score: {
-        attendance: 0,
-        hygiene: 0,
-        drinksQuality: 0,
-        price: 0,
-      },
     });
 
     establishment = establishment.toJSON();
@@ -71,7 +65,6 @@ class EstablishmentController {
   }
 
   public async list({ latitude, longitude, radius }: ListRequest) {
-    console.log(radius);
     const establishments = await Establishment.find({
       location: {
         $near: {
@@ -106,7 +99,6 @@ class EstablishmentController {
 
       establishment.description = description || establishment.description;
 
-      console.log(description);
       establishment.name = name || establishment.name;
 
       establishment.phoneNumber = phoneNumber || establishment.phoneNumber;
